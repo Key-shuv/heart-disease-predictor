@@ -47,5 +47,8 @@ def predict():
     except Exception as e:
         return f"Error: {e}"
 
-if __name__ == "__main__":
-   app.run(host="0.0.0.0", port=10000, debug=True)
+import os
+
+if __name__ == "__main__":  # Ensures Flask only runs when executing the script directly
+    port = int(os.environ.get("PORT", 10000))  # Get Render's assigned port
+    app.run(host="0.0.0.0", port=port, debug=True)

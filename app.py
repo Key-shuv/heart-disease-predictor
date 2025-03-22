@@ -1,3 +1,5 @@
+import csv
+from datetime import datetime
 from flask import Flask, render_template, request
 import pickle
 import numpy as np
@@ -42,6 +44,15 @@ def predict():
         # Convert result to readable format
         result = "has heart disease" if prediction[0] == 1 else "does not have heart disease"
 
+        # Log prediction to logs.csv
+        with open("logs.csv", mode="a", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow([
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                age, sex, cp, trestbps, chol, fbs, restecg,
+                thalach, exang, oldpeak, slope, ca, thal,
+                result
+            ])
         return render_template("result.html", result=result)
 
     except Exception as e:

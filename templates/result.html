@@ -4,10 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a2d9d5a4f8.js" crossorigin="anonymous"></script>
+    <style>
+        .result-container {
+            max-width: 500px;
+            margin: 80px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 18px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            animation: fadeIn 0.7s ease-in-out;
+        }
+
+        .result-container h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .result-message {
+            font-size: 1.4rem;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            background-color: #e8f0fe;
+            color: #1b4f72;
+            font-weight: bold;
+        }
+
+        .has-disease {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .no-disease {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .try-again {
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+
+        .try-again:hover {
+            background-color: #0056b3;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Prediction Result</h1>
-    <p>The patient {{ result }}.</p>
-    <a href="/">Go Back</a>
+    <div class="result-container">
+        <h1><i class="fas fa-heartbeat"></i> Prediction Result</h1>
+        <div class="result-message {{ 'has-disease' if 'has heart disease' in result else 'no-disease' }}">
+            {{ result }}
+        </div>
+        <a href="/" class="try-again"><i class="fas fa-arrow-left"></i> Try Another Prediction</a>
+    </div>
 </body>
 </html>

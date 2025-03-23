@@ -89,3 +89,20 @@ button:hover {
         font-size: 13px;
     }
 }
+
+.download-btn {
+    margin-top: 20px;
+}
+
+.btn-download {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.btn-download:hover {
+    background-color: #0056b3;
+}

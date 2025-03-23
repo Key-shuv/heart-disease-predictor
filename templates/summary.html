@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Summary</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f9fb;
+            text-align: center;
+            margin: 0;
+            padding: 40px;
+        }
+        .chart-container {
+            width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <h2>Prediction Summary</h2>
+        <canvas id="predictionChart" width="300" height="300"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('predictionChart');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Has Heart Disease', 'No Heart Disease'],
+                datasets: [{
+                    label: 'Predictions',
+                    data: [{{ has_disease }}, {{ no_disease }}],
+                    backgroundColor: ['#ff4d4d', '#28a745'],
+                    borderColor: ['#ff9999', '#9ff5b3'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

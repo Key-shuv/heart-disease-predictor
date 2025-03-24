@@ -1,6 +1,6 @@
 import csv
 from datetime import datetime
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 import pickle
 import numpy as np
 import os
@@ -18,7 +18,6 @@ def home():
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-        # Collect input values
         age = float(request.form["age"])
         sex = float(request.form["sex"])
         cp = float(request.form["cp"])
@@ -33,14 +32,14 @@ def predict():
         ca = float(request.form["ca"])
         thal = float(request.form["thal"])
 
-        # Prepare input
         user_input = np.array([[age, sex, cp, trestbps, chol, fbs, restecg,
                                 thalach, exang, oldpeak, slope, ca, thal]])
         user_input_scaled = scaler.transform(user_input)
         prediction = model.predict(user_input_scaled)
+
         result = "has heart disease" if prediction[0] == 1 else "does not have heart disease"
 
-        # Log to CSV
+        # Log prediction to CSV
         with open("logs.csv", mode="a", newline="") as file:
             writer = csv.writer(file)
             writer.writerow([
@@ -72,6 +71,13 @@ def summary():
         pass
 
     return render_template("summary.html", has_disease=has_disease, no_disease=no_disease)
+
+@app.route("/download-logs")
+def download_logs():
+    try:
+        return send_file("logs.csv", as_attachment=True)
+    except FileNotFoundError:
+        return "No logs available yet.", 404
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))

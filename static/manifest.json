@@ -19,5 +19,13 @@
       "type": "image/png",
       "purpose": "any"
     }
+  ],
+  "screenshots": [
+    {
+      "src": "/static/icons/screenshot1.png",
+      "type": "image/png",
+      "sizes": "540x720",
+      "form_factor": "wide"
+    }
   ]
 }

@@ -23,9 +23,9 @@
   "screenshots": [
     {
       "src": "/static/icons/screenshot1.png",
-      "type": "image/png",
       "sizes": "540x720",
+      "type": "image/png",
       "form_factor": "wide"
     }
   ]
-}	
+}

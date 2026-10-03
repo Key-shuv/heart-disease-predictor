@@ -1,6 +1,6 @@
 import csv
 from datetime import datetime
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, send_from_directory
 import pickle
 import numpy as np
 import os
@@ -11,10 +11,25 @@ app = Flask(__name__)
 model = pickle.load(open("model.pkl", "rb"))
 scaler = pickle.load(open("scaler.pkl", "rb"))
 
+
+# Home page
 @app.route("/")
 def home():
     return render_template("index.html")
 
+
+# Serve service worker from the root of the website
+# This allows the PWA service worker to control the whole app
+@app.route("/service-worker.js")
+def service_worker():
+    return send_from_directory(
+        "static",
+        "service-worker.js",
+        mimetype="application/javascript"
+    )
+
+
+# Heart disease prediction
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
@@ -32,20 +47,49 @@ def predict():
         ca = float(request.form["ca"])
         thal = float(request.form["thal"])
 
-        user_input = np.array([[age, sex, cp, trestbps, chol, fbs, restecg,
-                                thalach, exang, oldpeak, slope, ca, thal]])
+        user_input = np.array([[
+            age,
+            sex,
+            cp,
+            trestbps,
+            chol,
+            fbs,
+            restecg,
+            thalach,
+            exang,
+            oldpeak,
+            slope,
+            ca,
+            thal
+        ]])
+
         user_input_scaled = scaler.transform(user_input)
         prediction = model.predict(user_input_scaled)
 
-        result = "has heart disease" if prediction[0] == 1 else "does not have heart disease"
+        result = (
+            "has heart disease"
+            if prediction[0] == 1
+            else "does not have heart disease"
+        )
 
         # Log prediction to CSV
         with open("logs.csv", mode="a", newline="") as file:
             writer = csv.writer(file)
             writer.writerow([
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                age, sex, cp, trestbps, chol, fbs, restecg,
-                thalach, exang, oldpeak, slope, ca, thal,
+                age,
+                sex,
+                cp,
+                trestbps,
+                chol,
+                fbs,
+                restecg,
+                thalach,
+                exang,
+                oldpeak,
+                slope,
+                ca,
+                thal,
                 result
             ])
 
@@ -54,6 +98,8 @@ def predict():
     except Exception as e:
         return f"Error: {e}"
 
+
+# Prediction summary
 @app.route("/summary")
 def summary():
     has_disease = 0
@@ -62,23 +108,35 @@ def summary():
     try:
         with open("logs.csv", "r") as file:
             reader = csv.reader(file)
+
             for row in reader:
                 if len(row) > 0 and row[-1] == "has heart disease":
                     has_disease += 1
+
                 elif len(row) > 0 and row[-1] == "does not have heart disease":
                     no_disease += 1
+
     except FileNotFoundError:
         pass
 
-    return render_template("summary.html", has_disease=has_disease, no_disease=no_disease)
+    return render_template(
+        "summary.html",
+        has_disease=has_disease,
+        no_disease=no_disease
+    )
 
+
+# Download prediction logs
 @app.route("/download-logs")
 def download_logs():
     try:
         return send_file("logs.csv", as_attachment=True)
+
     except FileNotFoundError:
         return "No logs available yet.", 404
 
+
+# Start Flask
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)

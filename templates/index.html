@@ -1,82 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Heart Disease Prediction Form using Machine Learning." />
-  <meta name="theme-color" content="#007bff" />
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Heart Disease Prediction Form using Machine Learning."
+  >
+
+  <meta name="theme-color" content="#007bff">
+
   <title>Heart Disease Predictor</title>
 
-  <!-- Fonts & Styles -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <!-- Google Font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+    rel="stylesheet"
+  >
 
-  <!-- Manifest & Icons -->
-  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}?v=3">
-  <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/web-app-manifest-192x192.png') }}">
+  <!-- CSS -->
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}"
+  >
+
+  <!-- PWA Manifest -->
+  <link
+    rel="manifest"
+    href="{{ url_for('static', filename='manifest.json') }}"
+  >
+
+  <!-- App Icon -->
+  <link
+    rel="icon"
+    type="image/png"
+    href="{{ url_for('static', filename='icons/web-app-manifest-192x192.png') }}"
+  >
+
+  <!-- Apple/iPhone Home Screen Icon -->
+  <link
+    rel="apple-touch-icon"
+    href="{{ url_for('static', filename='icons/web-app-manifest-192x192.png') }}"
+  >
+
 </head>
 
+
 <body>
+
   <div class="container animate">
+
     <h1>💙 Heart Disease Prediction</h1>
-    <form action="/predict" method="post" onsubmit="showSummaryAndSubmit(event)">
+
+    <form
+      action="/predict"
+      method="post"
+      onsubmit="showSummaryAndSubmit(event)"
+    >
+
       <label>👤 Age:</label>
-      <input type="number" name="age" required />
+      <input type="number" name="age" required>
+
       <label>⚥ Sex (1 = Male, 0 = Female):</label>
-      <input type="number" name="sex" required />
+      <input
+        type="number"
+        name="sex"
+        min="0"
+        max="1"
+        required
+      >
+
       <label>❤️ Chest Pain Type (0-3):</label>
-      <input type="number" name="cp" required />
+      <input
+        type="number"
+        name="cp"
+        min="0"
+        max="3"
+        required
+      >
+
       <label>⚕️ Resting Blood Pressure:</label>
-      <input type="number" name="trestbps" required />
+      <input
+        type="number"
+        name="trestbps"
+        required
+      >
+
       <label>✏️ Cholesterol Level:</label>
-      <input type="number" name="chol" required />
-      <label>💧 Fasting Blood Sugar (1 = >120 mg/dL, 0 = <=120 mg/dL):</label>
-      <input type="number" name="fbs" required />
+      <input
+        type="number"
+        name="chol"
+        required
+      >
+
+      <label>
+        💧 Fasting Blood Sugar
+        (1 = &gt;120 mg/dL, 0 = &lt;=120 mg/dL):
+      </label>
+
+      <input
+        type="number"
+        name="fbs"
+        min="0"
+        max="1"
+        required
+      >
+
       <label>🩺 Resting ECG (0-2):</label>
-      <input type="number" name="restecg" required />
+      <input
+        type="number"
+        name="restecg"
+        min="0"
+        max="2"
+        required
+      >
+
       <label>🏃 Max Heart Rate Achieved:</label>
-      <input type="number" name="thalach" required />
-      <label>😓 Exercise-Induced Angina (1 = Yes, 0 = No):</label>
-      <input type="number" name="exang" required />
+      <input
+        type="number"
+        name="thalach"
+        required
+      >
+
+      <label>
+        😓 Exercise-Induced Angina
+        (1 = Yes, 0 = No):
+      </label>
+
+      <input
+        type="number"
+        name="exang"
+        min="0"
+        max="1"
+        required
+      >
+
       <label>📉 Oldpeak (ST depression):</label>
-      <input type="number" name="oldpeak" step="0.1" required />
+      <input
+        type="number"
+        name="oldpeak"
+        step="0.1"
+        required
+      >
+
       <label>📈 Slope of Peak Exercise (0-2):</label>
-      <input type="number" name="slope" required />
+      <input
+        type="number"
+        name="slope"
+        min="0"
+        max="2"
+        required
+      >
+
       <label>🔢 Number of Major Vessels (0-4):</label>
-      <input type="number" name="ca" required />
+      <input
+        type="number"
+        name="ca"
+        min="0"
+        max="4"
+        required
+      >
+
       <label>🧬 Thalassemia (1-3):</label>
-      <input type="number" name="thal" required />
-      <button type="submit">Predict</button>
+      <input
+        type="number"
+        name="thal"
+        min="1"
+        max="3"
+        required
+      >
+
+      <button type="submit">
+        Predict
+      </button>
+
       <div style="margin-top: 20px;">
-        <a href="/summary" class="btn-download">View Prediction Summary</a>
+        <a
+          href="/summary"
+          class="btn-download"
+        >
+          View Prediction Summary
+        </a>
       </div>
+
     </form>
+
   </div>
 
-  <!-- JS: Summary Prompt -->
+
+  <!-- Confirmation before prediction -->
   <script>
+
     function showSummaryAndSubmit(event) {
+
       event.preventDefault();
-      const inputs = document.querySelectorAll('input');
-      let summary = "Please confirm your inputs:\\n\\n";
+
+      const inputs =
+        document.querySelectorAll("form input");
+
+      let summary =
+        "Please confirm your inputs:\n\n";
+
       inputs.forEach(input => {
-        summary += \`\${input.previousElementSibling.textContent.trim()} \${input.value}\\n\`;
+
+        const label =
+          input.previousElementSibling
+            .textContent
+            .trim();
+
+        summary +=
+          `${label} ${input.value}\n`;
+
       });
+
       if (confirm(summary)) {
         event.target.submit();
       }
+
     }
+
   </script>
 
-  <!-- JS: Register Service Worker -->
+
+  <!-- Register PWA Service Worker -->
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/static/service-worker.js')
-          .then(reg => console.log("✅ Service Worker registered:", reg))
-          .catch(err => console.error("❌ Service Worker registration failed:", err));
+
+    if ("serviceWorker" in navigator) {
+
+      window.addEventListener("load", () => {
+
+        navigator.serviceWorker
+          .register("/service-worker.js")
+
+          .then(registration => {
+            console.log(
+              "Service Worker registered:",
+              registration
+            );
+          })
+
+          .catch(error => {
+            console.error(
+              "Service Worker registration failed:",
+              error
+            );
+          });
+
       });
+
     }
+
   </script>
+
 </body>
+
 </html>
